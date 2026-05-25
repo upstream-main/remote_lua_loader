@@ -192,7 +192,7 @@ local function p2jb()
     local TRIPLEFREE_ATTEMPTS = 8
     local DEBUG_RUN_WAIT_FOR_BUMP_FROM_ELF = false -- change this if you want to bump the ucred ref count by hand, it will wait for you for 20 seconds
     local FREE_FDS_NUM = 0x13
-    local KQUEUE_EX_AMNT = 0x100000001 - FREE_FDS_NUM + 0x3
+    local KQUEUE_EX_AMNT = 0x100000001 - FREE_FDS_NUM
     local UIO_SYSSPACE = 1
     local FIND_TRIPLET_FAST = 5000
 
@@ -1180,12 +1180,12 @@ local function p2jb()
             local pthread_create = fcall(dlsym(LIBKERNEL_HANDLE, "scePthreadCreate"))
             local pthread_join   = fcall(dlsym(LIBKERNEL_HANDLE, "scePthreadJoin"))
 
-            local elfldr_savedata_path = string.format("/mnt/sandbox/%s_000/savedata0/elfldr-ps5.elf", get_title_id())
-            local kexp_savedata_path = string.format("/mnt/sandbox/%s_000/savedata0/kexp.bin", get_title_id())
+            local elfldr_savedata_path = string.format("/mnt/sandbox/%s_000/savedata0/ps5-elfldr.elf", get_title_id())
+            local kexp_savedata_path = string.format("/mnt/sandbox/%s_000/savedata0/ps5-kexp.bin", get_title_id())
 
             local elfldr_path = ""
-            if file_exists("/data/elfldr-ps5.elf") then
-                elfldr_path = "/data/elfldr-ps5.elf"
+            if file_exists("/data/ps5-elfldr.elf") then
+                elfldr_path = "/data/ps5-elfldr.elf"
             elseif file_exists(elfldr_savedata_path) then
                 elfldr_path = elfldr_savedata_path
             else
@@ -1198,8 +1198,8 @@ local function p2jb()
 
 
             local kexp_path = ""
-            if file_exists("/data/kexp.bin") then
-                kexp_path = "/data/kexp.bin"
+            if file_exists("/data/ps5-kexp.bin") then
+                kexp_path = "/data/ps5-kexp.bin"
             elseif file_exists(kexp_savedata_path) then
                 kexp_path = kexp_savedata_path
             else
@@ -1261,7 +1261,7 @@ if PLATFORM ~= "ps5" or tonumber(FW_VERSION) > 12.70 then
     printf("this exploit only works on ps5 (fw <= 12.70) (current %s %s)", PLATFORM, FW_VERSION)
     send_ps_notification("this exploit only works on ps5 (fw <= 12.70) (current %s %s)", PLATFORM, FW_VERSION)
 else
-    if not file_exists("/savedata0/elfldr-ps5.elf") or not file_exists("/savedata0/kexp.bin") then
+    if not file_exists("/savedata0/ps5-elfldr.elf") or not file_exists("/savedata0/ps5-kexp.bin") then
         error("update remote_lua_loader savedata")
     end
 
