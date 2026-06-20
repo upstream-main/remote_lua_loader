@@ -470,12 +470,13 @@ function ftp_send_list()
         local end_ptr = contents + nread
 
         while entry < end_ptr do
-            local length = read_u8(entry + 0x4)
+            local length = read_u16(entry + 0x4)
             if length == 0 then break end
 
-            local name = memory.read_buffer(entry + 0x8, 64)
+            local namlen = read_u8(entry + 0x7)
+            local name = memory.read_buffer(entry + 0x8, namlen)
 
-            if name ~= '.' and name ~= '..' and name ~= '\0' then
+            if name ~= '.' and name ~= '..' then
                 local full_path = ftp.client.cur_path .. "/" .. name
                 if sceStat(full_path, st) >= 0 then
                     local file_mode = read_u16(st + 8)
